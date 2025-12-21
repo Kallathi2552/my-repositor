@@ -1,0 +1,14 @@
+.img{
+    background-image: url("luffy.jpg");
+    background-position: 300px 100px;
+    background-size: 800px 450px;
+    background-repeat: no-repeat;
+    width: 1000px;
+    height: 400px;
+    
+}
+h1{
+
+    margin-top: 300px;
+    margin-left: 600px;
+}
