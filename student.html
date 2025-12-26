@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <label>Name :</label>
+    <input type="text" id="name"><br>
+    <label>Roll No :</label>
+    <input type="number" id="Roll"><br>
+    <label>Mark 1 :</label>
+    <input type="number" id="m1"><br>
+    <label>Mark 2 :</label>
+    <input type="number" id="m2"><br>
+    <label>Mark 3 :</label>
+    <input type="number" id="m3"><br>
+    <label>Mark 4 :</label>
+    <input type="number" id="m4"><br>
+    <label>Mark 5 :</label>
+    <input type="number" id="m5"><br>
+    <h2 id="Result"></h2><br><br>
+    <input type="button" value="Get Result" onclick="result()">
+    <script>
+        function result() {
+    let name = document.getElementById("name").value;
+    let rollNo = document.getElementById("Roll").value;
+
+    let mark1 = Number(document.getElementById("m1").value);
+    let mark2 = Number(document.getElementById("m2").value);
+    let mark3 = Number(document.getElementById("m3").value);
+    let mark4 = Number(document.getElementById("m4").value);
+    let mark5 = Number(document.getElementById("m5").value);
+
+    let total = (mark1 + mark2 + mark3 + mark4 + mark5) / 5;
+
+    if (total >= 50) {
+        document.getElementById("Result").innerHTML = "PASS";
+    } else {
+        document.getElementById("Result").innerHTML = "FAIL";
+    }
+}
+
+    </script>
+</body>
+</html>
