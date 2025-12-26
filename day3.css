@@ -1,0 +1,84 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: black;
+  color: white;
+  padding: 10px 20px;
+}
+
+.menu {
+  display: flex;
+  list-style: none;
+  gap: 20px;
+}
+
+.menu li {
+  cursor: pointer;
+}
+
+.navbar input {
+  padding: 5px;
+}
+
+.hero {
+  background: #9acd32;
+  color: white;
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.hero h1 {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.hero p {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.hero button {
+  padding: 10px 20px;
+  background: #337ab7;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.content {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.content span {
+  color: gray;
+  font-size: 18px;
+}
+
+.cards {
+  display: flex;
+  gap: 20px;
+  padding: 40px;
+}
+
+.card {
+  text-align: center;
+}
+
+.img-box {
+  background: #eee;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: gray;
+  margin-bottom: 15px;
+}
