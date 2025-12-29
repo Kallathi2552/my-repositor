@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        html, body{
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .box h2{
+            margin-top: 50px;
+            color: white;
+        }
+        .box button{
+            margin-top: 20px;
+        }
+        .box{
+            text-align: center;
+            margin-top: 250px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            border: none;
+            outline: none;
+            width: 400px;
+            height: 200px;
+            
+        }
+        button{
+            background-color:black;
+            color: white;
+            font: 20px;
+            padding: 20px 30px;
+            border: none;
+            outline: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        button:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.6);
+            background: linear-gradient();
+        }
+        
+    </style>
+    <div class="box">
+        <h2>Click Here To Change Color</h2>
+        <button onclick="colors()">Submit</button>
+        </div>
+    <script>
+        let color=[ "linear-gradient(#a61989, #0012fe)","linear-gradient(#ff7300, #fffb00)","linear-gradient(#48ff00, #00ffd5)","linear-gradient(#002bff, #ff00c8)","linear-gradient(#f4d03f, #8e44ad)","linear-gradient(#1abc9c, #ff5733)"];
+        let index=0;
+        function colors(){
+             document.body.style.background = color[index];
+             index++;
+             if(index === color.length)
+             {
+                index=0;
+             }
+
+        }
+    </script>
+</body>
+</html>
