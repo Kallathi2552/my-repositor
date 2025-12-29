@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://kit.fontawesome.com/4b81c0c46e.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<link href="portfolio.css" rel="stylesheet">
+<body>
+    <section class="god">
+        <section class="back">
+            <section class="all">
+                <section class="z">
+                    <div class="logo">
+                         <i class="fa-brands fa-pied-piper-hat"></i>
+                    </div>
+                        <ul class="a">
+                            <li>Home</li>
+                            <li>About</li>
+                            <li>My Work</li>
+                            <li>Contact</li>
+                        </ul>
+                </section> 
+                <div class="image">
+                    <img src="piece.png" alt="luffy">
+                    <p id="k">Hi, i'm KALLATHI DINESH</p>
+                    <p id="d">B.E CSE Student</p>
+                    <p id="m">i'm Studing II year in Francis Xavier Engineering College with a growing passion for front-end development. I enjoy building clean, responsive, and user-friendly web interfaces using modern web technologies. My goal is to become a skilled front-end developer. In my free time, I enjoy drawing, which helps me relax and fuels my creativity.</p>
+                    <ul class="bottom">
+                        <li id="f"><i class="fa-brands fa-github"></i></li>
+                        <li><i class="fa-brands fa-facebook"></i></li>
+                        <li><i class="fa-brands fa-linkedin"></i></li>
+                        <li><i class="fa-brands fa-twitter"></i></li>
+                    </ul>
+                </div>
+            </section>
+        </section>
+        <section class="contact">
+            <div class="form">
+                <h2>Contact Us</h2>
+                <div class="split">
+                    <div class="msg">
+                        <h3>Send a Message</h3>
+                        <form>
+                            <input type="text" placeholder="Name" id="name"><br><br>
+                            <input type="email" placeholder="Email" id="email"><br><br>
+                            <textarea placeholder="Message" id="msg"></textarea><br><br>
+                            <button type="submit" onclick="contactForm()">Submit</button>
+                        </form>
+                    </div>
+                    <div class="info">
+                        <h3>Contact Information</h3>
+                        <p><i class="fa-solid fa-phone"></i>+91 9789336030</p>
+                        <p><i class="fa-solid fa-envelope"></i>kallathidinesh62@gmail.com</p>
+                        <p><i class="fa-solid fa-location-pin"></i>Tirunelveli</p>
+                    </div>
+                </div>
+            </div>
+            <footer class="foot">
+                <div class="start">
+                    <ul class="end">
+                        <li><i class="fa-brands fa-github"></i></li>
+                        <li><i class="fa-brands fa-facebook"></i></li>
+                        <li><i class="fa-brands fa-linkedin"></i></li>
+                        <li><i class="fa-brands fa-twitter"></i></li>
+                        <li><i class="fa-brands fa-instagram"></i></li>
+                    </ul>
+                    <ul class="ending">
+                        <li>Home</li>
+                        <li>About Us</li>
+                        <li>My Work</li>
+                        <li>Contact Us</li>
+                    </ul>
+                </div>
+                <div class="last">
+                    <p>copyright<i class="fa-regular fa-copyright"></i>2025; Designed by KD</p>
+                </div>
+            </footer>
+        </section>
+    </section>
+    <script>
+    function contactForm(){
+        let Name = String(document.getElementById("name").value);
+        let Email = String(document.getElementById("email").value);
+        let Message = String(document.getElementById("msg").value);
+        if(Name==""|| Email==""||Message==""){
+            alert("Please fill the box");
+        }
+        else{
+            alert("Message sent sucessfully")
+        }
+        }
+        </script>
+</body>
+</html>
