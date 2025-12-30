@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Analyzer with Sparkle</title>
+
+    <style>
+        body{
+            background: url("luffy.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .all{
+             min-height: 100vh;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+        }
+        .m{
+            background: transparent;
+            backdrop-filter: blur(4px);
+            border-radius: 50px;
+            border-top: 1px solid rgba(255,255,255,0.4);
+            border-left: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.8);
+            max-width: 400px;
+            padding: 50px;
+            margin: 150px auto;
+            color: white;
+        }
+        .title{
+            text-align: center;
+        }
+        input, button{
+            box-sizing: border-box;
+            width: 100%;
+            border: none;
+            outline: none;
+            border-radius: 10px;
+        }
+        input{
+            padding: 8px 12px;
+            margin-bottom: 15px;
+            
+        }
+        button{
+            padding: 10px 15px;
+            background-color: #f38219;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .click-effect{
+            position: absolute;
+            pointer-events: none;
+        }
+        .spark{
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            background: white;
+            transform-origin: bottom;
+            border-radius: 2px;
+        }
+        .effect .spark{
+            animation: sparkle 0.7s ease-out;
+        }
+        @keyframes sparkle{
+            0%{
+                width: 6px;
+                height: 40px;
+                opacity: 0;
+                transform: rotate(var(--angle)) translateY(0);
+            }
+            30%{
+                opacity: 1;
+            }
+            100%{
+                width: 0;
+                height: 0;
+                opacity: 0;
+                transform: rotate(var(--angle)) translateY(var(--distance));
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="god">
+<section class="all">
+    <div class="m">
+        <div class="title">
+            <h1>Number Analyzer</h1>
+        </div>
+        <input type="text" id="marks" placeholder="Enter numbers separated by comma">
+        <button id="analyzeBtn" onclick="total()">Analyze</button>
+        <div class="ans">
+            <p id="total"></p>
+            <p id="Avg"></p>
+            <p id="LN"></p>
+            <p id="SN"></p>
+        </div>
+    </div>
+</section>
+<div class="click-effect">
+    <div class="spark" style="--angle:0deg; --distance:30px"></div>
+    <div class="spark" style="--angle:45deg; --distance:32px"></div>
+    <div class="spark" style="--angle:90deg; --distance:28px"></div>
+    <div class="spark" style="--angle:135deg; --distance:30px"></div>
+    <div class="spark" style="--angle:180deg; --distance:34px"></div>
+    <div class="spark" style="--angle:225deg; --distance:30px"></div>
+    <div class="spark" style="--angle:270deg; --distance:32px"></div>
+    <div class="spark" style="--angle:315deg; --distance:30px"></div>
+</div>
+</section>
+<script>
+function total(){
+    const input = document.getElementById("marks").value;
+    const marks = input.split(',').map(n => Number(n.trim()));
+
+    let sum = 0;
+    let largest = marks[0];
+    let smallest = marks[0];
+
+    for(let i = 0; i < marks.length; i++){
+        sum += marks[i];
+        if(marks[i] > largest) largest = marks[i];
+        if(marks[i] < smallest) smallest = marks[i];
+    }
+
+    document.getElementById("total").innerHTML = "Total: " + sum;
+    document.getElementById("Avg").innerHTML = "Average: " + (sum / marks.length);
+    document.getElementById("LN").innerHTML = "Largest: " + largest;
+    document.getElementById("SN").innerHTML = "Smallest: " + smallest;
+}
+const effect = document.querySelector(".click-effect");
+const btn = document.getElementById("analyzeBtn");
+btn.addEventListener("click", (e) => {
+    effect.style.top = e.clientY + "px";
+    effect.style.left = e.clientX + "px";
+    effect.classList.remove("effect");
+    void effect.offsetWidth;
+    effect.classList.add("effect");
+});
+</script>
+</body>
+</html>
