@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Feedback Form</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* PAGE BACKGROUND */
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+  overflow: hidden;
+  transition: background 0.3s, color 0.3s;
+  color: #000;
+}
+body.dark {
+  background: #121212;
+  color: #fff;
+}
+
+/* LEAF CONTAINER */
+.leaves {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* LEAF */
+.leaf {
+  position: absolute;
+  top: -60px;
+  font-size: 22px;
+  opacity: 0.8;
+  animation-name: fallCross;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* CROSS FALL ANIMATION */
+@keyframes fallCross {
+  0% { transform: translate(0, -60px) rotate(0deg); }
+  25% { transform: translate(-40px, 25vh) rotate(90deg); }
+  50% { transform: translate(40px, 50vh) rotate(180deg); }
+  75% { transform: translate(-30px, 75vh) rotate(270deg); }
+  100% { transform: translate(30px, 110vh) rotate(360deg); }
+}
+
+/* CARD */
+.feedback-card {
+  width: 380px;
+  padding: 30px;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  color: #000;
+  position: relative;
+  z-index: 2;
+  transition: background 0.3s, color 0.3s;
+}
+body.dark .feedback-card {
+  background: #1e1e1e;
+  color: #fff;
+}
+
+.feedback-card h2 {
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: 26px;
+}
+.feedback-card p {
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 25px;
+  color: #333;
+}
+body.dark .feedback-card p { color: #ccc; }
+
+/* INPUTS */
+.input-group {
+  margin-bottom: 18px;
+}
+.input-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+.input-group input,
+.input-group textarea,
+.input-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background: #fff;
+  color: #000;
+  transition: background 0.3s, color 0.3s, border 0.3s;
+}
+body.dark .input-group input,
+body.dark .input-group textarea,
+body.dark .input-group select {
+  background: #2c2c2c;
+  color: #fff;
+  border: 1px solid #555;
+}
+
+.input-group textarea {
+  resize: none;
+  height: 100px;
+}
+
+/* RATING */
+.rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  gap: 40px;
+  margin: 10px 0 20px;
+}
+.rating input { display: none; }
+.rating label {
+  font-size: 28px;
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.2s, transform 0.2s;
+}
+.rating label:hover,
+.rating label:hover ~ label { color: goldenrod; transform: scale(1.1); }
+.rating input:checked ~ label { color: goldenrod; }
+
+/* BUTTON */
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 30px;
+  border: none;
+  background: #000;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+body.dark .submit-btn { background: #667eea; color: #fff; }
+.submit-btn:hover { opacity: 0.9; }
+
+/* SUCCESS MESSAGE */
+.success-msg {
+  text-align: center;
+  margin-top: 15px;
+  color: green;
+  font-weight: bold;
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LEAF BACKGROUND -->
+<div class="leaves" id="leaves"></div>
+
+<div class="feedback-card">
+  <h2>We Value Your Feedback</h2>
+  <p>Your thoughts help us improve</p>
+
+  <form id="feedbackForm">
+
+    <div class="input-group">
+      <label>Username</label>
+      <input type="text" id="name" required>
+    </div>
+
+    <div class="input-group">
+      <label>Email</label>
+      <input type="email" id="email" required>
+    </div>
+
+    <div class="input-group">
+      <label>How was your experience?</label>
+      <select id="experience" required>
+        <option value="">Select</option>
+        <option>Excellent</option>
+        <option>Good</option>
+        <option>Average</option>
+        <option>Poor</option>
+        <option>Very Poor</option>
+      </select>
+    </div>
+
+    <label>Rate us</label>
+    <div class="rating">
+      <input type="radio" id="star5" name="rate" value="5">
+      <label for="star5">★</label>
+      <input type="radio" id="star4" name="rate" value="4">
+      <label for="star4">★</label>
+      <input type="radio" id="star3" name="rate" value="3">
+      <label for="star3">★</label>
+      <input type="radio" id="star2" name="rate" value="2">
+      <label for="star2">★</label>
+      <input type="radio" id="star1" name="rate" value="1">
+      <label for="star1">★</label>
+    </div>
+
+    <div class="input-group">
+      <label>Your Message</label>
+      <textarea id="message"></textarea>
+    </div>
+
+    <button class="submit-btn">Send Feedback</button>
+    <div class="success-msg" id="successMsg">Feedback submitted successfully ✅</div>
+
+  </form>
+</div>
+
+<script>
+/* APPLY THEME FROM USER SETTINGS */
+if(localStorage.getItem("theme") === "dark"){
+  document.body.classList.add("dark");
+}
+
+/* LEAF GENERATOR */
+const leavesContainer = document.getElementById("leaves");
+const leafEmojis = ["🍂", "🍁"];
+
+function createLeaf() {
+  const leaf = document.createElement("div");
+  leaf.className = "leaf";
+  leaf.textContent = leafEmojis[Math.floor(Math.random() * leafEmojis.length)];
+  leaf.style.left = Math.random() * 100 + "vw";
+  leaf.style.fontSize = 16 + Math.random() * 22 + "px";
+  leaf.style.animationDuration = 6 + Math.random() * 6 + "s";
+  leavesContainer.appendChild(leaf);
+  setTimeout(() => leaf.remove(), 12000);
+}
+setInterval(createLeaf, 500);
+
+/* AUTO-FILL USER INFO */
+window.addEventListener("DOMContentLoaded", ()=>{
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if(currentUser && currentUser !== "admin"){
+    document.getElementById("name").value = currentUser.username;
+    document.getElementById("email").value = currentUser.email;
+  } else if(currentUser === "admin"){
+    document.getElementById("name").value = "Admin";
+    document.getElementById("email").value = "admin@example.com";
+  }
+});
+
+/* FORM SUBMISSION LOGIC */
+const params = new URLSearchParams(window.location.search);
+const feedbackForm = document.getElementById("feedbackForm");
+const successMsg = document.getElementById("successMsg");
+
+feedbackForm.addEventListener("submit", function(e){
+  e.preventDefault();
+
+  const feedback = {
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    rating: document.querySelector('input[name="rate"]:checked')?.value || "Not rated",
+    experience: document.getElementById("experience").value,
+    message: document.getElementById("message").value,
+    img: params.get("img"),
+    date: new Date().toLocaleString()
+  };
+
+  const all = JSON.parse(localStorage.getItem("feedbacks")) || [];
+  all.push(feedback);
+  localStorage.setItem("feedbacks", JSON.stringify(all));
+
+  successMsg.style.display = "block";
+  feedbackForm.reset();
+
+  setTimeout(()=>{
+    window.location.replace("product.html?" + params.toString());
+  },1500);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Feedback Panel</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Poppins,sans-serif;
+}
+body{
+  min-height:100vh;
+  background:#ffffff;
+  padding:40px;
+  color:#000;
+  overflow:hidden;
+}
+.leaves{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+.leaf{
+  position:absolute;
+  top:-120px;
+  opacity:0.85;
+  animation:leafFall linear infinite;
+}
+@keyframes leafFall{
+  0%{ transform:translateX(0) translateY(0) rotate(0deg); }
+  25%{ transform:translateX(-30px) translateY(25vh) rotate(90deg); }
+  50%{ transform:translateX(30px) translateY(50vh) rotate(180deg); }
+  75%{ transform:translateX(-20px) translateY(75vh) rotate(270deg); }
+  100%{ transform:translateX(10px) translateY(120vh) rotate(360deg); }
+}
+h1{
+  text-align:center;
+  margin-bottom:30px;
+  background:linear-gradient(135deg,#87cefa,#5dade2);
+  color:#fff;
+  padding:18px 25px;
+  border-radius:16px;
+  width:fit-content;
+  margin-left:auto;
+  margin-right:auto;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  position:relative;
+  z-index:2;
+}
+.dashboard{
+  max-width:900px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
+  position:relative;
+  z-index:2;
+}
+.feedback-card{
+  background:rgba(255,255,255,0.95);
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 15px 30px rgba(0,0,0,0.15);
+  cursor:pointer;
+}
+.feedback-card h3{ font-size:18px; margin-bottom:5px; }
+.feedback-card span{ font-size:13px; opacity:0.7; }
+.feedback-card p{ margin:15px 0; font-size:14px; line-height:1.5; }
+.actions{
+  display:flex;
+  justify-content:space-between;
+  margin-top:15px;
+}
+.actions button{
+  padding:8px 14px;
+  border-radius:20px;
+  border:none;
+  cursor:pointer;
+  font-size:13px;
+}
+.reply{ background:linear-gradient(135deg,#00c6ff,#0072ff); color:#fff; }
+.delete{ background:linear-gradient(135deg,#ff416c,#ff4b2b); color:#fff; }
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:3;
+}
+.modal-content{
+  background:#fff;
+  padding:25px;
+  border-radius:16px;
+  width:400px;
+  text-align:center;
+}
+.modal-content img{
+  width:100%;
+  max-height:250px;
+  border-radius:12px;
+  object-fit:cover;
+  margin-bottom:15px;
+}
+.modal-content p{
+  background:rgba(0,0,0,0.05);
+  padding:15px;
+  border-radius:12px;
+  font-size:14px;
+}
+.modal-content textarea{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:12px;
+  border:1px solid #ccc;
+  resize:none;
+  font-size:14px;
+}
+.modal-content button{
+  margin-top:15px;
+  padding:10px 20px;
+  border:none;
+  border-radius:20px;
+  background:linear-gradient(135deg,#43e97b,#38f9d7);
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="leaves" id="leaves"></div>
+
+<h1>Admin Feedback Dashboard</h1>
+<div class="dashboard" id="dashboard"></div>
+
+<!-- MODAL FOR VIEWING AND REPLYING -->
+<div class="modal" id="feedbackModal">
+  <div class="modal-content">
+    <img id="modalImg">
+    <p id="modalMessage"></p>
+    <p id="modalDate" style="font-size:12px;opacity:.6"></p>
+    <textarea id="adminReply" placeholder="Type your reply here..."></textarea>
+    <button onclick="sendReply()">Send Reply</button>
+    <button style="background:#ccc;color:#000;margin-top:10px;" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+/* LEAF GENERATOR */
+const leavesContainer = document.getElementById("leaves");
+const leafEmojis = ["🍂","🍁"];
+function createLeaf(){
+  const leaf = document.createElement("div");
+  leaf.className="leaf";
+  leaf.textContent = leafEmojis[Math.floor(Math.random()*leafEmojis.length)];
+  leaf.style.left=Math.random()*100+"vw";
+  leaf.style.fontSize=18+Math.random()*24+"px";
+  const duration = 10 + Math.random()*6;
+  leaf.style.animationDuration=duration+"s";
+  leavesContainer.appendChild(leaf);
+  setTimeout(()=>leaf.remove(), duration*1000);
+}
+setInterval(createLeaf, 300);
+
+/* DASHBOARD */
+const dashboard=document.getElementById("dashboard");
+const feedbackModal=document.getElementById("feedbackModal");
+const modalImg=document.getElementById("modalImg");
+const modalMessage=document.getElementById("modalMessage");
+const modalDate=document.getElementById("modalDate");
+const adminReplyField=document.getElementById("adminReply");
+
+let feedbacks=JSON.parse(localStorage.getItem("feedbacks"))||[];
+let adminReplies=JSON.parse(localStorage.getItem("adminReplies"))||[];
+
+let currentFeedbackIndex=null;
+
+function renderFeedback(){
+  dashboard.innerHTML="";
+  if(!feedbacks.length){
+    dashboard.innerHTML="<p>No feedback available.</p>";
+    return;
+  }
+  feedbacks.forEach((f,i)=>{
+    const card=document.createElement("div");
+    card.className="feedback-card";
+    card.innerHTML=`
+      <h3>${f.name}</h3>
+      <span>${f.email} • ⭐ ${f.rating}</span>
+      <p>${f.message.substring(0,50)}...</p>
+      <span style="font-size:12px;opacity:.6">${f.date}</span>
+      <div class="actions">
+        <button class="reply" onclick="openReplyModal(${i})">Reply</button>
+        <button class="delete" onclick="deleteFeedback(${i})">Delete</button>
+      </div>
+    `;
+    dashboard.appendChild(card);
+  });
+}
+
+function deleteFeedback(i){
+  feedbacks.splice(i,1);
+  localStorage.setItem("feedbacks",JSON.stringify(feedbacks));
+  renderFeedback();
+}
+
+function openReplyModal(index){
+  currentFeedbackIndex=index;
+  const f=feedbacks[index];
+  modalImg.src=f.img||"placeholder.jpg";
+  modalMessage.textContent=f.message;
+  modalDate.textContent=f.date;
+  adminReplyField.value = "";
+  feedbackModal.style.display="flex";
+}
+
+function closeModal(){
+  feedbackModal.style.display="none";
+}
+
+function sendReply(){
+  const replyText = adminReplyField.value.trim();
+  if(!replyText){
+    alert("Please type a reply before sending!");
+    return;
+  }
+  const now = new Date().toLocaleString();
+  adminReplies.push({
+    feedbackIndex: currentFeedbackIndex,
+    reply: replyText,
+    date: now
+  });
+  localStorage.setItem("adminReplies", JSON.stringify(adminReplies));
+  alert("Reply sent!");
+  closeModal();
+  renderFeedback();
+}
+
+renderFeedback();
+</script>
+
+</body>
+</html>

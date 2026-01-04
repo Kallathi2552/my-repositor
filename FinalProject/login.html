@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login / Signup</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  background:#23242a;
+}
+
+.container{
+  perspective:1200px;
+}
+
+.card{
+  width:400px;
+  height:500px;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform 1s cubic-bezier(.4,.2,.2,1);
+}
+
+.card.flip{
+  transform:rotateY(180deg);
+}
+
+.box{
+  position:absolute;
+  inset:0;
+  background:#1c1c1c;
+  border-radius:8px;
+  overflow:hidden;
+  backface-visibility:hidden;
+}
+
+.signup{
+  transform:rotateY(180deg);
+}
+
+/* Pointer control */
+.login{ pointer-events:auto; }
+.signup{ pointer-events:none; }
+
+.card.flip .login{ pointer-events:none; }
+.card.flip .signup{ pointer-events:auto; }
+
+.box::before,
+.box::after{
+  content:'';
+  position:absolute;
+  top:-50%;
+  left:-50%;
+  width:380px;
+  height:420px;
+  background:linear-gradient(0deg,transparent,#45f3ff,#45f3ff);
+  transform-origin:bottom right;
+  animation:spin 6s linear infinite;
+  z-index: 0;
+}
+.box::after{ animation-delay:-3s; }
+
+@keyframes spin{
+  to{ transform:rotate(360deg); }
+}
+
+form{
+  position:absolute;
+  inset:2px;
+  background:#28292d;
+  padding:50px 40px;
+  border-radius:8px;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+}
+
+h2{
+  color:#45f3ff;
+  text-align:center;
+  letter-spacing:.1em;
+}
+
+.inputBox{
+  position:relative;
+  width:300px;
+  margin-top:35px;
+}
+
+.inputBox input{
+  width:100%;
+  padding:20px 10px 10px;
+  background:transparent;
+  border:none;
+  position: relative;
+  z-index: 3;
+  outline:none;
+  color:black;
+  font-size:1em;
+}
+
+.inputBox span{
+  position:absolute;
+  left:0;
+  padding:20px 0 10px;
+  color:#8f8f8f;
+  transition:.5s;
+  pointer-events:none;
+}
+
+.inputBox i{
+  position:absolute;
+  left:0;
+  bottom:0;
+  width:100%;
+  height:2px;
+  background:#45f3ff;
+  border-radius:4px;
+  transition:.5s;
+}
+
+.inputBox input:focus ~ span,
+.inputBox input:valid ~ span{
+  transform:translateY(-34px);
+  font-size:.75em;
+  color:#45f3ff;
+}
+
+.inputBox input:focus ~ i,
+.inputBox input:valid ~ i{
+  height:44px;
+}
+
+.links{
+  display:flex;
+  justify-content:space-between;
+  margin-top:10px;
+}
+
+.links a{
+  font-size:.75em;
+  color:#8f8f8f;
+  cursor:pointer;
+  text-decoration:none;
+}
+.links a:hover{ color:#45f3ff; }
+
+input[type="submit"]{
+  width:100px;
+  margin-top:20px;
+  padding:10px;
+  background:#45f3ff;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+  font-weight:600;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="card" id="card">
+
+    <!-- LOGIN -->
+    <div class="box login">
+      <form id="loginForm" onsubmit="return handleLogin(event)">
+        <h2>Login</h2>
+
+        <div class="inputBox">
+          <input type="text" id="loginUsername" required>
+          <span>Username / Email</span><i></i>
+        </div>
+
+        <div class="inputBox">
+          <input type="password" id="loginPassword" required>
+          <span>Password</span><i></i>
+        </div>
+
+        <div class="links">
+          <a>Forgot password?</a>
+          <a onclick="showSignup()">Signup</a>
+        </div>
+
+        <input type="submit" value="Login">
+      </form>
+    </div>
+
+    <!-- SIGNUP -->
+    <div class="box signup">
+      <form id="signupForm" onsubmit="return handleRegister(event)">
+        <h2>Sign Up</h2>
+
+        <div class="inputBox">
+          <input type="text" id="signupUsername" required>
+          <span>Username</span><i></i>
+        </div>
+
+        <div class="inputBox">
+          <input type="email" id="signupEmail" required>
+          <span>Email</span><i></i>
+        </div>
+
+        <div class="inputBox">
+          <input type="password" id="signupPassword" required>
+          <span>Password</span><i></i>
+        </div>
+
+        <div class="links">
+          <span></span>
+          <a onclick="showLogin()">Login</a>
+        </div>
+
+        <input type="submit" value="Register">
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const card = document.getElementById("card");
+
+function showSignup(){
+  card.classList.add("flip");
+}
+
+function showLogin(){
+  card.classList.remove("flip");
+}
+
+// REGISTER USER
+function handleRegister(e){
+  e.preventDefault();
+  const username = document.getElementById("signupUsername").value.trim();
+  const email = document.getElementById("signupEmail").value.trim();
+  const password = document.getElementById("signupPassword").value.trim();
+
+  if(!username || !email || !password){
+    alert("Please fill all fields");
+    return false;
+  }
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+  // Check if email already exists
+  if(users.some(u => u.email === email)){
+    alert("Email already registered. Please login.");
+    return false;
+  }
+
+  users.push({username, email, password});
+  localStorage.setItem("users", JSON.stringify(users));
+  alert("Signup successful! You can now login.");
+  showLogin();
+  return false;
+}
+
+// LOGIN USER
+function handleLogin(e){
+  e.preventDefault();
+  const usernameInput = document.getElementById("loginUsername").value.trim();
+  const passwordInput = document.getElementById("loginPassword").value.trim();
+
+  // Admin credentials
+  if(usernameInput === "KD" && passwordInput === "2552214632"){
+    localStorage.setItem("currentUser", "admin");
+    window.location.href = "Admin.html";
+    return;
+  }
+
+  // Check users in localStorage
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+  const user = users.find(u => (u.email === usernameInput || u.username === usernameInput) && u.password === passwordInput);
+
+  if(user){
+    localStorage.setItem("currentUser", JSON.stringify(user));
+    window.location.href = "user.html";
+  } else {
+    alert("User not found. Please sign up first.");
+    showSignup();
+  }
+}
+</script>
+
+</body>
+</html>

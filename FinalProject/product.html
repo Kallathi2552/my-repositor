@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Product Details</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+
+:root{
+  --bg:#f1f3f6;
+  --text:#000;
+  --card:#fff;
+}
+body.dark{
+  --bg:#121212;
+  --text:#fff;
+  --card:#1e1e1e;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  padding-bottom:60px;
+  transition:.3s;
+}
+
+/* HEADER */
+.header{
+  display:flex;
+  align-items:center;
+  padding:12px;
+  background:var(--card);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+.back-btn{
+  font-size:20px;
+  cursor:pointer;
+}
+
+/* IMAGE */
+.image-box{
+  display:flex;
+  justify-content:center;
+  margin-top:20px;
+  position:relative;
+  z-index:2; /* ✅ FIX */
+}
+.image-box img{
+  width:260px;
+  height:260px;
+  object-fit:cover;
+  border-radius:18px;
+}
+
+/* LEAF EFFECT */
+.leaves{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0; /* ✅ FIX */
+}
+.leaf{
+  position:absolute;
+  top:-50px;
+  font-size:22px;
+  opacity:.8;
+  animation:fall 8s linear infinite;
+}
+@keyframes fall{
+  0%{transform:translateY(-50px) rotate(0)}
+  100%{transform:translateY(110vh) rotate(360deg)}
+}
+
+/* CONTENT */
+.text{
+  text-align:center;
+  padding:20px;
+  position:relative;
+  z-index:2; /* keeps text above leaves */
+}
+.text h2{margin:10px 0}
+.price{font-size:20px;font-weight:600;margin-bottom:15px}
+
+/* LIKE / DISLIKE */
+.actions{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+}
+.action-btn{
+  width:90px;
+  padding:10px;
+  border-radius:14px;
+  background:#eee;
+  cursor:pointer;
+  transition:.2s;
+}
+body.dark .action-btn{background:#333}
+.action-btn.active{
+  background:#1976d2;
+  color:#fff;
+}
+
+/* FEEDBACK BUTTON */
+.feedback-btn{
+  margin-top:20px;
+  width:60%;
+  padding:12px;
+  border:none;
+  border-radius:30px;
+  background:#667eea;
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
+}
+.feedback-btn:hover{background:#556cd6}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="back-btn" onclick="goBack()">← Back</div>
+</div>
+
+<!-- IMAGE -->
+<div class="image-box">
+  <img id="productImg">
+</div>
+
+<!-- LEAVES -->
+<div class="leaves" id="leaves"></div>
+
+<!-- CONTENT -->
+<div class="text">
+  <h2 id="productName"></h2>
+  <div class="price" id="productPrice"></div>
+
+  <div class="actions">
+    <div class="action-btn" id="likeBtn" onclick="react('like')">
+      👍 <span id="likeCount">0</span>
+    </div>
+    <div class="action-btn" id="dislikeBtn" onclick="react('dislike')">
+      👎 <span id="dislikeCount">0</span>
+    </div>
+  </div>
+
+  <button class="feedback-btn" onclick="giveFeedback()">Give Feedback</button>
+</div>
+
+<script>
+// THEME
+if(localStorage.getItem("theme")==="dark"){
+  document.body.classList.add("dark");
+}
+
+// PRODUCT DATA
+const params = new URLSearchParams(window.location.search);
+const name = params.get("name");
+const price = params.get("price");
+const img = params.get("img");
+
+productImg.src = img;
+productName.innerText = name;
+productPrice.innerText = price;
+
+// LIKE / DISLIKE STORAGE
+const likeKey = name+"_likes";
+const dislikeKey = name+"_dislikes";
+const reactionKey = name+"_reaction";
+
+let likes = Number(localStorage.getItem(likeKey)) || 0;
+let dislikes = Number(localStorage.getItem(dislikeKey)) || 0;
+let reaction = localStorage.getItem(reactionKey);
+
+likeCount.innerText = likes;
+dislikeCount.innerText = dislikes;
+updateUI();
+
+function react(type){
+  if(reaction === type) return;
+
+  if(reaction === "like") likes--;
+  if(reaction === "dislike") dislikes--;
+
+  if(type === "like") likes++;
+  if(type === "dislike") dislikes++;
+
+  reaction = type;
+  localStorage.setItem(likeKey, likes);
+  localStorage.setItem(dislikeKey, dislikes);
+  localStorage.setItem(reactionKey, reaction);
+
+  likeCount.innerText = likes;
+  dislikeCount.innerText = dislikes;
+  updateUI();
+}
+
+function updateUI(){
+  likeBtn.classList.toggle("active", reaction==="like");
+  dislikeBtn.classList.toggle("active", reaction==="dislike");
+}
+
+// FEEDBACK NAVIGATION
+function giveFeedback(){
+  window.location.href = "feedback.html?" + params.toString();
+}
+
+// BACK TO USER PAGE
+function goBack(){
+  window.location.href = "user.html";
+}
+
+// LEAVES
+const leavesContainer = document.getElementById("leaves");
+const emojis=["🍂","🍁"];
+setInterval(()=>{
+  const leaf=document.createElement("div");
+  leaf.className="leaf";
+  leaf.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+  leaf.style.left=Math.random()*100+"vw";
+  leaf.style.fontSize=16+Math.random()*24+"px";
+  leaf.style.animationDuration=6+Math.random()*6+"s";
+  leavesContainer.appendChild(leaf);
+  setTimeout(()=>leaf.remove(),12000);
+},500);
+</script>
+
+</body>
+</html>

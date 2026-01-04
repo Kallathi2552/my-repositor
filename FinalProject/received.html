@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Received Feedback Replies</title>
+<style>
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000;
+  --card-bg: rgba(255,255,255,0.95);
+  --card-text: #000;
+}
+
+body.dark {
+  --bg-color: #121212;
+  --text-color: #fff;
+  --card-bg: #1e1e1e;
+  --card-text: #fff;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
+body{min-height:100vh;background:var(--bg-color);color:var(--text-color);padding:30px;position:relative;transition:0.3s;overflow-x:hidden;}
+
+/* LEAVES */
+.leaves{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.leaf{position:absolute;top:-50px;font-size:20px;opacity:0.8;animation-name:fallLeaf;animation-timing-function:linear;animation-iteration-count:infinite;}
+@keyframes fallLeaf{0%{transform:translate(0,-50px) rotate(0deg);}25%{transform:translate(-30px,25vh) rotate(90deg);}50%{transform:translate(30px,50vh) rotate(180deg);}75%{transform:translate(-20px,75vh) rotate(270deg);}100%{transform:translate(20px,110vh) rotate(360deg);}}
+
+/* HEADER & BACK BUTTON */
+.back-btn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:16px;
+  margin-bottom:25px;
+  cursor:pointer;
+  color:#0072ff;
+  font-weight:500;
+  transition:0.2s;
+}
+.back-btn:hover{
+  opacity:0.8;
+  text-decoration:underline;
+}
+h1{
+  text-align:center;
+  margin-bottom:30px;
+  background:linear-gradient(135deg,#87cefa,#5dade2);
+  color:#fff;
+  padding:18px 25px;
+  border-radius:16px;
+  width:fit-content;
+  margin-left:auto;
+  margin-right:auto;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  position:relative;
+  z-index:2;
+}
+
+/* REPLIES GRID */
+.dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;position:relative;z-index:1;}
+.feedback-card{background:var(--card-bg);color:var(--card-text);border-radius:16px;padding:20px;box-shadow:0 15px 30px rgba(0,0,0,0.15);cursor:pointer;transition:transform 0.3s, box-shadow 0.3s, background 0.3s, color 0.3s;}
+.feedback-card:hover{transform:translateY(-5px);box-shadow:0 20px 35px rgba(0,0,0,0.2);}
+.feedback-card img{width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:15px;}
+.feedback-card h3{ font-size:18px; margin-bottom:5px; color:#0072ff; }
+.feedback-card span{ font-size:13px; opacity:0.7; margin-bottom:10px; display:block; }
+.feedback-card p{ margin:10px 0; font-size:14px; line-height:1.5; }
+.feedback-card small{ font-size:12px; color:#666; display:block; margin-top:5px; }
+</style>
+</head>
+<body>
+
+<div class="leaves" id="leaves"></div>
+
+<!-- BACK BUTTON -->
+<div class="back-btn" onclick="goBack()">← Back to Products</div>
+
+<h1>Admin Replies</h1>
+<div class="dashboard" id="dashboard"></div>
+
+<script>
+// BACK BUTTON
+function goBack(){
+  window.location.href = "user.html";
+}
+
+// Load admin replies & feedbacks
+let replies = JSON.parse(localStorage.getItem("adminReplies")) || [];
+let feedbacks = JSON.parse(localStorage.getItem("feedbacks")) || [];
+const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+const dashboard = document.getElementById("dashboard");
+
+// Leaf animation
+const leavesContainer = document.getElementById("leaves");
+const leafEmojis = ["🍂","🍁"];
+function createLeaf(){
+  const leaf = document.createElement("div");
+  leaf.className="leaf";
+  leaf.textContent = leafEmojis[Math.floor(Math.random()*leafEmojis.length)];
+  leaf.style.left=Math.random()*100+"vw";
+  leaf.style.fontSize=16+Math.random()*22+"px";
+  leaf.style.animationDuration=6+Math.random()*6+"s";
+  leavesContainer.appendChild(leaf);
+  setTimeout(()=>leaf.remove(),12000);
+}
+setInterval(createLeaf,500);
+
+// Render replies only for logged-in user
+function renderReplies(){
+  dashboard.innerHTML = "";
+  if(!replies.length || !currentUser || currentUser === "admin"){
+    dashboard.innerHTML = "<p style='text-align:center;color:#555;'>No replies available.</p>";
+    return;
+  }
+
+  const userReplies = replies.filter(r=>{
+    const feedback = feedbacks[r.feedbackIndex];
+    return feedback && feedback.email === currentUser.email;
+  });
+
+  if(!userReplies.length){
+    dashboard.innerHTML = "<p style='text-align:center;color:#555;'>No replies from admin yet.</p>";
+    return;
+  }
+
+  userReplies.forEach(r=>{
+    const feedback = feedbacks[r.feedbackIndex];
+    if(!feedback) return;
+
+    const card = document.createElement("div");
+    card.className="feedback-card";
+    card.innerHTML=`
+      <img src="${feedback.img || 'placeholder.jpg'}" alt="Product Image">
+      <h3>${feedback.name}</h3>
+      <span>Rating: ${feedback.rating}</span>
+      <p>User Message: ${feedback.message}</p>
+      <p><strong>Admin Reply:</strong> ${r.reply}</p>
+      <small>Replied on: ${r.date}</small>
+    `;
+    dashboard.appendChild(card);
+  });
+}
+
+// Apply theme from user.html
+if(localStorage.getItem("theme")==="dark") document.body.classList.add("dark");
+
+renderReplies();
+</script>
+
+</body>
+</html>
