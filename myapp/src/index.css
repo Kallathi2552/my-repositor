@@ -1,0 +1,75 @@
+@import "tailwindcss";
+body {
+  margin: 0;
+}
+
+
+.app {
+  min-height: 100vh;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+
+.app.light {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+
+.app.dark {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.navbar {
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+}
+
+
+.navbar .theme-btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(red, black);
+  color: white;
+}
+
+
+.content {
+  height: calc(100vh - 70px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 35px;
+}
+
+.center-image {
+  width: 500px;          
+  max-width: 90%;
+  border-radius: 18px;
+  transition: box-shadow 0.4s ease, transform 0.3s ease;
+}
+
+.center-image.light {
+  box-shadow:
+    10px 10px 20px rgba(255, 0, 0, 0.6),
+    10px 10px 45px rgba(255, 0, 0, 0.4),
+    10px 10px 90px rgba(255, 0, 0, 0.25);
+}
+
+.center-image.dark {
+  box-shadow:
+    10px 10px 20px rgba(0, 180, 255, 0.7),
+    10px 10px 50px rgba(0, 180, 255, 0.5),
+    10px 10px 100px rgba(0, 180, 255, 0.35);
+}
+
+.center-image:hover {
+  transform: scale(1.05);
+}
